@@ -1,7 +1,19 @@
 import bcrypt from 'bcryptjs';
 import cors from 'cors';
 import express from 'express';
+import knex from 'knex';
 
+const postgresDatabase = knex({
+  client: 'pg',
+  connection: {
+    host: '127.0.0.1',
+    port: 5432,
+    user: 'postgres',
+    password: 'postgres',
+    database: 'smartreco'
+  }
+});
+// console.log(postgresDatabase.select('*').from('users'))
 const app = express();
 const database = {
   users: [
@@ -25,7 +37,7 @@ const database = {
       name: "simba",
       email: "lionking@gmail.com",
       password: "scarCanKiss",
-      joined: "2023-04-07T17:58:43.739Z",
+      joined: new Date(),
       entries: 0
     }
   ]
@@ -45,7 +57,7 @@ app.post("/signin", (req, res) => {
   // bcrypt.compareSync(req.body.password, database.users[database.users.length - 1].password);
   // console.log(bcrypt.compareSync(req.body.password, database.users[database.users.length - 1].password))
   if (req.body.email === database.users[0].email && req.body.password === database.users[0].password) {
-    res.json("Success!")
+    res.json(database.users[0]);
   } else {
     res.status(400).json("Error logging in.")
   }
@@ -53,15 +65,15 @@ app.post("/signin", (req, res) => {
 app.post("/register", (req, res) => {
   const { email, name, password } = req.body;
   const hash = bcrypt.hashSync(password, salt);
-  database.users.push({
-    id: database.users.length + 1,
-    name,
-    email,
-    password: hash,
-    joined: new Date(),
-    entries: 0
-  })
-  res.json(database.users[database.users.length - 1])
+  postgresDatabase('users')
+    .returning('*')
+    .insert({
+      name,
+      email,
+      joined: new Date()
+    })
+    .then(user => { res.json(user[0]) })
+    .catch(err => { res.status(400).json('unable to register!') })
 });
 
 app.get("/profile/:id", (req, res) => {
