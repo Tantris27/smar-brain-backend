@@ -10,11 +10,12 @@ import handleSignin from './controllers/signin.js';
 const postgresDatabase = knex({
   client: 'pg',
   connection: {
-    host: '127.0.0.1',
+    connection: process.env.DATABASE_URL,
+    host: process.env.DATABASE_HOST,
     port: 5432,
-    user: 'postgres',
-    password: 'postgres',
-    database: 'smartreco'
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PW,
+    database: process.env.DATABASE
   }
 });
 
