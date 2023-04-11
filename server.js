@@ -40,6 +40,6 @@ app.get("/profile/:id", (req, res) => {
 app.put("/image", (req, res) => { image(req, res, postgresDatabase) })
 app.post("/imageurl", (req, res) => { handleApiCall(req, res) })
 
-app.listen(3000, () => {
-  console.log("App is running on Port:3000")
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`App is running on Port:${process.env.PORT}`)
 })
