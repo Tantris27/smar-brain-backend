@@ -28,9 +28,9 @@ app.use(cors())
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// app.get("/", (req, res) => {
-//   res.send(database.users)
-// })
+app.get("/", (req, res) => {
+  res.send("This is working")
+})
 app.post("/signin", (req, res) => {
   handleSignin(req, res, bcrypt, postgresDatabase)
 })
