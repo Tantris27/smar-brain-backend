@@ -2,10 +2,9 @@ import Clarifai from 'clarifai';
 
 //You must add your own API key here from Clarifai.
 const app = new Clarifai.App({
-  apiKey: '3697553e4c804fef9c6d097db06524b8'
+  apiKey: process.env.CLARIFAI
 });
 
-const PAT = '02aeb3daadd3488bbd41ef2f0a3af7a2';
 const handleApiCall = (req, res) => {
   app.models.predict('face-detection', req.body.input)
     .then(data => {
